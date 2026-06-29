@@ -1,1 +1,191 @@
-<h1>Hola, esta es mi nueva página probando pagina</h1>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para ti...</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #1a0b2e, #4b0082);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Efecto de nieve */
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: white;
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+            text-shadow: 0 0 5px rgba(255,255,255,0.8);
+            user-select: none;
+            z-index: 1000;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Contenedores */
+        #pantalla-bloqueo, #pantalla-carta {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+            max-width: 500px;
+            width: 90%;
+            z-index: 10;
+            transition: opacity 1s ease-in-out;
+        }
+
+        #pantalla-carta {
+            display: none;
+            opacity: 0;
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #dda0dd;
+        }
+
+        h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5em;
+            color: #4b0082;
+            margin-bottom: 10px;
+        }
+
+        input {
+            padding: 15px;
+            width: 80%;
+            border-radius: 25px;
+            border: none;
+            outline: none;
+            font-size: 1em;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        }
+
+        button {
+            padding: 12px 30px;
+            border-radius: 25px;
+            border: none;
+            background-color: #8a2be2;
+            color: white;
+            font-weight: bold;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #9370db;
+            transform: scale(1.05);
+        }
+
+        p {
+            font-size: 1.05em;
+            line-height: 1.6;
+            text-align: justify;
+            margin-bottom: 15px;
+        }
+
+        .error {
+            color: #ffb6c1;
+            font-size: 0.9em;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="pantalla-bloqueo">
+        <h1>Una carta especial...</h1>
+        <p>Esta carta está protegida. Por favor, ingresa tu nombre completo para abrirla.</p>
+        <input type="text" id="nombre-input" placeholder="Tu nombre completo...">
+        <br>
+        <button onclick="verificarNombre()">Desbloquear</button>
+        <p class="error" id="mensaje-error">Ese no es el nombre correcto, intenta de nuevo.</p>
+    </div>
+
+    <div id="pantalla-carta">
+        <h2>Hola...</h2>
+        <p>Sé que me comentaste que no buscas una relación en este momento, y quiero que sepas que respeto muchísimo eso. Pero también soy alguien que no se quiere quedar con la duda del <strong>"¿qué hubiera pasado?"</strong>.</p>
+        
+        <p>Ese día que salimos, entre la cena, la lavada del carro y el café, sentí una química muy bonita. Me la pasé increíble. Admiro mucho lo dedicada que eres; estás a nada de ser una súper doctora de la Unison. También me encanta cómo hablas de tu familia, de tu mamá y de tu hermano (¡que seguro es buenísimo en el beis!).</p>
+        
+        <p>Sé que te encanta comer, viajar y que el invierno es tu estación favorita... por eso quise traerte un pedacito de invierno morado hasta tu pantalla.</p>
+        
+        <p>Hice esto porque quería sorprenderte. No te estoy pidiendo que seamos novios hoy ni presionándote a nada. Solo te pido <strong>la oportunidad de seguir conociéndonos</strong> y ver qué pasa. Si tu respuesta sigue siendo la misma, te doy mi palabra de que lo entenderé y me haré a un lado. Pero de verdad, valía la pena intentarlo.</p>
+        
+        <p style="text-align: center; font-weight: bold; color: #8a2be2; margin-top: 20px;">¿Me das esa oportunidad?</p>
+    </div>
+
+    <script>
+        // Lógica para desbloquear la carta
+        function verificarNombre() {
+            let input = document.getElementById('nombre-input').value.toLowerCase().trim();
+            // ¡CAMBIA EL NOMBRE DE AQUÍ ABAJO SI ES NECESARIO!
+            let nombreCorrecto = "sofia molina"; 
+            
+            if (input === nombreCorrecto || input.includes("sofia")) {
+                document.getElementById('pantalla-bloqueo').style.opacity = "0";
+                
+                setTimeout(() => {
+                    document.getElementById('pantalla-bloqueo').style.display = "none";
+                    let carta = document.getElementById('pantalla-carta');
+                    carta.style.display = "block";
+                    // Pequeño retraso para que la transición de opacidad funcione
+                    setTimeout(() => {
+                        carta.style.opacity = "1";
+                    }, 50);
+                }, 1000);
+            } else {
+                document.getElementById('mensaje-error').style.display = "block";
+            }
+        }
+
+        // Creador de Nieve (Invierno)
+        function crearNieve() {
+            const copo = document.createElement('div');
+            copo.classList.add('snowflake');
+            copo.innerHTML = '❄';
+            
+            // Posición y tamaño aleatorio
+            copo.style.left = Math.random() * 100 + 'vw';
+            copo.style.animationDuration = Math.random() * 3 + 7 + 's'; // caen entre 7 y 10 seg
+            copo.style.fontSize = Math.random() * 10 + 10 + 'px';
+            
+            document.body.appendChild(copo);
+
+            // Eliminar el copo cuando sale de la pantalla para no saturar la memoria
+            setTimeout(() => {
+                copo.remove();
+            }, 10000);
+        }
+
+        // Crear un copo de nieve cada 300 milisegundos
+        setInterval(crearNieve, 300);
+    </script>
+</body>
+</html>
