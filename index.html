@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Un detalle especial...</title>
+    <title>Para ti...</title>
     <style>
-        /* Estilos Generales para Teléfono - Mobile First */
+        /* Estilos Generales para Teléfono */
         body {
             margin: 0;
             padding: 0;
@@ -17,10 +17,10 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            font-size: 14px; /* Un poco más pequeña para texto largo en móvil */
+            font-size: 14px;
         }
 
-        /* Nieve (Invierno) */
+        /* Nieve */
         .snowflake {
             position: absolute;
             top: -10px;
@@ -28,7 +28,7 @@
             font-size: 1em;
             text-shadow: 0 0 5px rgba(255,255,255,0.8);
             user-select: none;
-            z-index: 1000;
+            z-index: 100;
             animation: fall linear infinite;
         }
 
@@ -38,202 +38,237 @@
         }
 
         /* Contenedores Principales */
-        #pantalla-bloqueo, #pantalla-carta {
+        .contenedor-pantalla {
             text-align: center;
             background: rgba(255, 255, 255, 0.1);
-            padding: 30px;
+            padding: 25px;
             border-radius: 20px;
             backdrop-filter: blur(10px);
             box-shadow: 0 0 20px rgba(138, 43, 226, 0.4);
-            max-width: 400px; /* Ajuste para móvil */
-            width: 85%; /* Se estira en móvil */
+            max-width: 400px;
+            width: 85%;
             z-index: 10;
-            transition: opacity 1s ease-in-out;
-            box-sizing: border-box; /* Importante para padding en móvil */
+            box-sizing: border-box;
+            transition: all 0.5s ease-in-out;
         }
 
-        #pantalla-carta {
+        #pantalla-carta, #pantalla-poema, #pantalla-exito {
             display: none;
             opacity: 0;
             background: rgba(255, 255, 255, 0.95);
             color: #333;
-            height: auto;
-            max-height: 90vh; /* Para que no sea más larga que la pantalla */
-            overflow-y: auto; /* Permite scroll si la carta es muy larga */
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
-        h1, h2, #pregunta-final {
+        h1, h2, h3, .texto-resaltado {
             font-family: 'Dancing Script', cursive;
             font-weight: 700;
             color: #dda0dd;
             margin-bottom: 15px;
-            font-size: 2.2em; /* Tamaño base */
         }
-
-        #pregunta-final {
-            color: #8a2be2;
-            font-size: 1.8em;
-            margin-top: 30px;
-        }
-
-        h2 { color: #4b0082; }
+        
+        h1 { font-size: 2.2em; }
+        h2 { font-size: 2.2em; color: #4b0082; }
+        h3 { font-size: 1.8em; color: #8a2be2; margin-top: 0;}
+        .texto-resaltado { font-size: 1.8em; color: #8a2be2; margin-top: 20px; display: block;}
 
         input {
             padding: 12px;
             width: 90%;
             border-radius: 25px;
-            border: none;
+            border: 2px solid #dda0dd;
             outline: none;
             font-size: 1em;
             text-align: center;
             margin-bottom: 15px;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
         }
 
         button {
-            padding: 10px 25px;
+            padding: 12px 30px;
             border-radius: 25px;
             border: none;
             color: white;
             font-weight: bold;
-            font-size: 1em;
+            font-size: 1.1em;
             cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
+            transition: all 0.3s;
             margin: 5px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        #btn-desbloquear, #btn-si {
-            background-color: #8a2be2;
-        }
-
-        #btn-desbloquear:hover, #btn-si:hover {
-            background-color: #9370db;
-            transform: scale(1.05);
-        }
-
-        /* Botón NO - El mecanismo juguetón */
-        #btn-no {
-            background-color: #555;
-            position: relative; /* Base para el movimiento JS */
-            transition: all 0.2s ease-out; /* Movimiento suave */
-        }
+        .btn-morado { background-color: #8a2be2; }
+        .btn-morado:hover { background-color: #9370db; transform: scale(1.05); }
+        
+        .btn-carta { background-color: #ff69b4; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 15px auto;}
+        
+        #btn-no { background-color: #777; transition: top 0.2s, left 0.2s; } /* Transición rápida para el salto */
 
         p {
             font-size: 1em;
             line-height: 1.6;
             text-align: justify;
             margin-bottom: 15px;
-            hyphens: auto; /* Para dividir palabras largas */
         }
 
-        .error {
-            color: #ffb6c1;
-            font-size: 0.9em;
-            margin-top: 10px;
-            display: none;
-        }
+        .error { color: #ffb6c1; font-size: 0.9em; display: none; }
+        #mensaje-no-error { color: #8a2be2; font-weight: bold; text-align: center; margin-top: 15px; min-height: 20px; }
+        
+        #contenedor-botones { display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
 
-        #contenedor-botones {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
+        /* Animación para abrir el poema (Zoom in) */
+        @keyframes abrirSobre {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
         }
+        .animacion-abrir { animation: abrirSobre 0.6s forwards; }
+        
+        .poema-texto { text-align: center; font-style: italic; font-size: 1.1em; line-height: 1.8; color: #4b0082; }
+
     </style>
 </head>
 <body>
 
-    <div id="pantalla-bloqueo">
-        <h1>Una carta especial...</h1>
-        <p>Esta carta está protegida. Por favor, ingresa tu nombre completo para abrirla.</p>
+    <div id="pantalla-bloqueo" class="contenedor-pantalla">
+        <h1>Una sorpresa...</h1>
+        <p>Este detalle está protegido. Por favor, ingresa tu nombre completo para abrirlo.</p>
         <input type="text" id="nombre-input" placeholder="Tu nombre completo...">
         <br>
-        <button id="btn-desbloquear" onclick="verificarNombre()">Desbloquear</button>
-        <p class="error" id="mensaje-error">Ese no es el nombre correcto, intenta de nuevo.</p>
+        <button class="btn-morado" onclick="verificarNombre()">Desbloquear</button>
+        <p class="error" id="mensaje-error">Ups... me parece que ese no es el nombre correcto.</p>
     </div>
 
-    <div id="pantalla-carta">
+    <div id="pantalla-carta" class="contenedor-pantalla">
         <h2>Hola...</h2>
         
-        <p>Ya nos habíamos despedido, ¿verdad? Pero la verdad es que desde ese momento no he dejado de pensar en ti. Me encantó conocerte y me di cuenta de que valía la pena intentar esto una última vez.</p>
+        <p>Ya nos habíamos despedido, ¿verdad? Pero la verdad es que desde el día que te conocí en aquel hotel, la noche que me quedé a dormir, no he dejado de pensar en ti. Soy alguien muy selectivo, pero contigo sentí unas ganas inmensas de conocerte más.</p>
 
-        <p>Sé que me comentaste que no buscas una relación ahora, y respeto mucho eso. Pero yo no soy de los que se quedan con la duda. Me habría sentido muy mal conmigo mismo si no hiciera este último detalle.</p>
+        <p>Entiendo perfecto de dónde vienes. Sé que llevas un año soltera después de una relación larga, y es completamente lógico que no quieras darle entrada a nadie ni busques una relación ahorita. Respeto muchísimo tu proceso y tu espacio.</p>
         
-        <p>Ese día que salimos, cenando, lavando el carro y con el café, sentí algo muy bonito. Vi mucha química y me la pasé increíble. Admiro mucho la dedicación que tienes; estás a nada de ser una súper doctora de la Unison. Me encantó cómo hablas de tu familia, de tu mamá y de tu hermano (¡que seguro es buenísimo en el beis!).</p>
+        <p>Pero no soy de los que se quedan con la duda. Ese día que salimos, sentí una química muy bonita. Admiro mucho la dedicación que tienes, que estés a nada de ser doctora en la Unison y me encantó cómo hablas de tu familia.</p>
         
-        <p>Quise traerte un pedacito de invierno morado hasta tu pantalla, porque sé que es lo que te encanta. Este detalle no es para presionarte, ni para que seamos novios hoy. Es solo para pedirte la oportunidad de seguir conociéndonos y ver a dónde nos lleva esto.</p>
+        <p>Quería hacerte este detalle porque tomarme el tiempo de programar una página web desde cero, solo para ti, es mi forma de demostrarte lo mucho que me importas.</p>
+
+        <button class="btn-carta" onclick="mostrarPoema()">💌 Abrir pequeño sobre</button>
         
-        <p>Si de plano tu respuesta sigue siendo no, lo entenderé y me haré a un lado, te doy mi palabra. Pero, de verdad... me encantaría poder intentarlo.</p>
+        <p>No te estoy pidiendo que seamos novios hoy, solo te pido la oportunidad de seguir conociéndonos y ver qué pasa.</p>
         
-        <p id="pregunta-final">¿Me das esa oportunidad para conocernos más?</p>
+        <span class="texto-resaltado">¿Me das esa oportunidad?</span>
         
         <div id="contenedor-botones">
-            <button id="btn-si" onclick="decirSi()">SÍ</button>
-            <button id="btn-no" onclick="decirNo()">NO</button>
+            <button id="btn-si" class="btn-morado" onclick="decirSi()">SÍ</button>
+            <button id="btn-no" onmouseover="moverBotonNo()" onclick="moverBotonNo()">NO</button>
         </div>
-        <p class="error" id="mensaje-no-error" style="color: #666; text-align: center;">Vaya, creo que te equivocaste... 😉</p>
+        <p id="mensaje-no-error"></p>
+    </div>
+
+    <div id="pantalla-poema" class="contenedor-pantalla">
+        <h3>Un pensamiento...</h3>
+        <div class="poema-texto">
+            Aunque afuera haga frío de <strong>invierno</strong>,<br>
+            lo que siento por ti es algo muy tierno.<br><br>
+            Me imagino contigo el mundo <strong>viajar</strong>,<br>
+            y mil historias juntos poder crear.<br><br>
+            Disfruto mucho salir contigo a <strong>comer</strong>,<br>
+            y poco a poco, todo de ti conocer. ❄️
+        </div>
+        <br>
+        <button class="btn-morado" onclick="cerrarPoema()">Guardar carta y regresar</button>
+    </div>
+
+    <div id="pantalla-exito" class="contenedor-pantalla">
+        <h2 style="color: #ff69b4;">¡Me haces muy feliz! ❤️</h2>
+        <p style="text-align: center; font-size: 1.2em;">Gracias por darme esta oportunidad. Prometo que valdrá la pena.<br><br>Nos vemos pronto.</p>
     </div>
 
     <script>
-        // Lógica de desbloqueo
+        // Variables globales para la nieve
+        let intervaloNieve;
+        let velocidadNieve = 300;
+
+        // Desbloqueo inicial
         function verificarNombre() {
             let input = document.getElementById('nombre-input').value.toLowerCase().trim();
-            // ¡CAMBIA ESTE NOMBRE SI ES NECESARIO!
             let nombreCorrecto = "sofia molina"; 
             
             if (input === nombreCorrecto || input.includes("sofia")) {
-                document.getElementById('pantalla-bloqueo').style.opacity = "0";
-                setTimeout(() => {
-                    document.getElementById('pantalla-bloqueo').style.display = "none";
-                    let carta = document.getElementById('pantalla-carta');
-                    carta.style.display = "block";
-                    setTimeout(() => carta.style.opacity = "1", 50);
-                }, 1000);
+                transicionPantalla('pantalla-bloqueo', 'pantalla-carta');
             } else {
                 document.getElementById('mensaje-error').style.display = "block";
             }
         }
 
-        // Lógica de los botones final SÍ/NO
+        // Lógica del Poema (Abrir y cerrar)
+        function mostrarPoema() {
+            document.getElementById('pantalla-carta').style.display = "none";
+            let poema = document.getElementById('pantalla-poema');
+            poema.style.display = "block";
+            poema.style.opacity = "1";
+            poema.classList.add('animacion-abrir'); // Animación de sobre abriéndose
+            
+            // Explosión de nieve al abrir la carta
+            for(let i=0; i<15; i++) { setTimeout(crearNieve, i * 50); }
+        }
+
+        function cerrarPoema() {
+            document.getElementById('pantalla-poema').classList.remove('animacion-abrir');
+            transicionPantalla('pantalla-poema', 'pantalla-carta');
+        }
+
+        // Lógica del Botón NO (Escurridizo en PC y Celular)
+        let contadorNo = 0;
         const btnNo = document.getElementById('btn-no');
         const mensajeNo = document.getElementById('mensaje-no-error');
 
-        // Función para mover el botón NO
-        function moverBotonNo(e) {
-            // No hacemos nada si el dispositivo es táctil para evitar fallos
-            if (window.matchMedia("(pointer: coarse)").matches) return;
-
-            // Obtenemos las dimensiones de la pantalla/contenedor
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-
-            // Calculamos una nueva posición aleatoria, alejada del puntero
-            const newX = Math.random() * (width - btnNo.offsetWidth);
-            const newY = Math.random() * (height - btnNo.offsetHeight);
-
-            btnNo.style.position = 'fixed'; // Asegura que se mueva por toda la pantalla
-            btnNo.style.left = `${newX}px`;
-            btnNo.style.top = `${newY}px`;
+        function moverBotonNo() {
+            contadorNo++;
             
-            mensajeNo.style.display = "none"; // Ocultar mensaje si se mueve
+            // Textos divertidos que cambian
+            if(contadorNo === 1) mensajeNo.innerText = "Uy, creo que tu dedo resbaló... 😉";
+            else if(contadorNo === 2) mensajeNo.innerText = "Mmm... ¿segura? Atrápalo si puedes...";
+            else if(contadorNo === 3) mensajeNo.innerText = "Definitivamente te estás equivocando de botón 😌";
+            
+            if(contadorNo >= 4) {
+                // A la cuarta vez desaparece
+                btnNo.style.display = "none";
+                mensajeNo.innerText = "¡Ups! El botón 'NO' se escapó. Es una señal del destino ✨";
+            } else {
+                // Mueve el botón a una posición aleatoria de la pantalla
+                btnNo.style.position = "fixed";
+                
+                // Calcular espacio disponible para que no se salga de la pantalla
+                let maxX = window.innerWidth - btnNo.offsetWidth - 20;
+                let maxY = window.innerHeight - btnNo.offsetHeight - 20;
+                
+                let randomX = Math.floor(Math.random() * maxX);
+                let randomY = Math.floor(Math.random() * maxY);
+                
+                btnNo.style.left = randomX + "px";
+                btnNo.style.top = randomY + "px";
+            }
         }
 
-        // Detectar si el puntero se acerca (para PC)
-        btnNo.addEventListener('mouseover', moverBotonNo);
-
-        // Si logra tocarlo (por ejemplo, en táctil muy rápido o si es muy pequeña la pantalla)
-        function decirNo() {
-            mensajeNo.style.display = "block";
-            btnNo.style.position = 'relative'; // Devolver a su lugar
-            btnNo.style.left = '0';
-            btnNo.style.top = '0';
-            btnNo.style.opacity = "0.5"; // Opacidad para indicar que no es una opción
-            setTimeout(()=> mensajeNo.style.display = "none", 3000); // Ocultar mensaje tras 3 segundos
-        }
-
+        // Lógica del Botón SÍ
         function decirSi() {
-            alert("¡Elegiste SÍ! ❤️ Me haces muy feliz. Nos vemos pronto.");
-            // Aquí puedes redirigir a un chat o simplemente dejarlo así.
+            transicionPantalla('pantalla-carta', 'pantalla-exito');
+            
+            // Crear una TORMENTA de nieve (muchos copos muy rápido)
+            clearInterval(intervaloNieve);
+            intervaloNieve = setInterval(crearNieve, 30); 
+        }
+
+        // Utilidad para cambiar pantallas suavemente
+        function transicionPantalla(idOcultar, idMostrar) {
+            let ocultar = document.getElementById(idOcultar);
+            let mostrar = document.getElementById(idMostrar);
+            
+            ocultar.style.opacity = "0";
+            setTimeout(() => {
+                ocultar.style.display = "none";
+                mostrar.style.display = "block";
+                setTimeout(() => mostrar.style.opacity = "1", 50);
+            }, 500);
         }
 
         // Creador de Nieve
@@ -242,12 +277,17 @@
             copo.classList.add('snowflake');
             copo.innerHTML = '❄';
             copo.style.left = Math.random() * 100 + 'vw';
-            copo.style.animationDuration = Math.random() * 3 + 7 + 's'; 
+            copo.style.animationDuration = Math.random() * 3 + 4 + 's'; // Caen un poco más rápido
             copo.style.fontSize = Math.random() * 10 + 10 + 'px';
             document.body.appendChild(copo);
-            setTimeout(() => copo.remove(), 10000);
+            
+            // Eliminar de memoria después de caer
+            setTimeout(() => copo.remove(), 7000);
         }
-        setInterval(crearNieve, 300);
+        
+        // Iniciar nieve normal
+        intervaloNieve = setInterval(crearNieve, velocidadNieve);
+
     </script>
 </body>
 </html>
