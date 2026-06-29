@@ -102,7 +102,7 @@
         
         .btn-carta { background-color: #ff69b4; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 15px auto;}
         
-        #btn-no { background-color: #777; transition: top 0.2s, left 0.2s; } /* Transición rápida para el salto */
+        #btn-no { background-color: #777; transition: top 0.2s, left 0.2s; } 
 
         p {
             font-size: 1em;
@@ -116,7 +116,7 @@
         
         #contenedor-botones { display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
 
-        /* Animación para abrir el poema (Zoom in) */
+        /* Estilos del libro de poemas */
         @keyframes abrirSobre {
             0% { transform: scale(0); opacity: 0; }
             50% { transform: scale(1.05); opacity: 1; }
@@ -124,7 +124,27 @@
         }
         .animacion-abrir { animation: abrirSobre 0.6s forwards; }
         
-        .poema-texto { text-align: center; font-style: italic; font-size: 1.1em; line-height: 1.8; color: #4b0082; }
+        .poema-texto { text-align: center; font-style: italic; font-size: 1.1em; line-height: 1.8; color: #4b0082; min-height: 200px; display: flex; flex-direction: column; justify-content: center;}
+
+        .controles-poema {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            background: #f0e6fa;
+            border-radius: 20px;
+            padding: 5px 15px;
+        }
+
+        .btn-nav {
+            background: none;
+            color: #8a2be2;
+            font-size: 1.5em;
+            padding: 5px 10px;
+            box-shadow: none;
+        }
+        .btn-nav:hover { background: none; transform: scale(1.2); }
+        #contador-poema { font-weight: bold; color: #8a2be2; }
 
     </style>
 </head>
@@ -150,7 +170,7 @@
         
         <p>Quería hacerte este detalle porque tomarme el tiempo de programar una página web desde cero, solo para ti, es mi forma de demostrarte lo mucho que me importas.</p>
 
-        <button class="btn-carta" onclick="mostrarPoema()">💌 Abrir pequeño sobre</button>
+        <button class="btn-carta" onclick="mostrarPoema()">💌 Abrir los sobres</button>
         
         <p>No te estoy pidiendo que seamos novios hoy, solo te pido la oportunidad de seguir conociéndonos y ver qué pasa.</p>
         
@@ -164,17 +184,18 @@
     </div>
 
     <div id="pantalla-poema" class="contenedor-pantalla">
-        <h3>Un pensamiento...</h3>
-        <div class="poema-texto">
-            Aunque afuera haga frío de <strong>invierno</strong>,<br>
-            lo que siento por ti es algo muy tierno.<br><br>
-            Me imagino contigo el mundo <strong>viajar</strong>,<br>
-            y mil historias juntos poder crear.<br><br>
-            Disfruto mucho salir contigo a <strong>comer</strong>,<br>
-            y poco a poco, todo de ti conocer. ❄️
+        <h3>Pensamientos...</h3>
+        
+        <div id="texto-poema" class="poema-texto"></div>
+        
+        <div class="controles-poema">
+            <button id="btn-prev-poema" class="btn-nav" onclick="cambiarPoema(-1)">⬅️</button>
+            <span id="contador-poema">1/5</span>
+            <button id="btn-next-poema" class="btn-nav" onclick="cambiarPoema(1)">➡️</button>
         </div>
+
         <br>
-        <button class="btn-morado" onclick="cerrarPoema()">Guardar carta y regresar</button>
+        <button id="btn-cerrar-poema" class="btn-morado" style="display:none;" onclick="cerrarPoema()">Guardar y regresar</button>
     </div>
 
     <div id="pantalla-exito" class="contenedor-pantalla">
@@ -183,11 +204,23 @@
     </div>
 
     <script>
-        // Variables globales para la nieve
+        // --- VARIABLES Y LÓGICA DE NIEVE ---
         let intervaloNieve;
         let velocidadNieve = 300;
 
-        // Desbloqueo inicial
+        function crearNieve() {
+            const copo = document.createElement('div');
+            copo.classList.add('snowflake');
+            copo.innerHTML = '❄';
+            copo.style.left = Math.random() * 100 + 'vw';
+            copo.style.animationDuration = Math.random() * 3 + 4 + 's';
+            copo.style.fontSize = Math.random() * 10 + 10 + 'px';
+            document.body.appendChild(copo);
+            setTimeout(() => copo.remove(), 7000);
+        }
+        intervaloNieve = setInterval(crearNieve, velocidadNieve);
+
+        // --- LÓGICA DE DESBLOQUEO ---
         function verificarNombre() {
             let input = document.getElementById('nombre-input').value.toLowerCase().trim();
             let nombreCorrecto = "sofia molina"; 
@@ -199,15 +232,54 @@
             }
         }
 
-        // Lógica del Poema (Abrir y cerrar)
+        // --- LÓGICA DE LOS POEMAS (CARRUSEL) ---
+        const poemas = [
+            "Aunque afuera haga frío de <strong>invierno</strong>,<br>lo que siento por ti es algo muy tierno.<br><br>Me imagino contigo el mundo <strong>viajar</strong>,<br>y mil historias juntos poder crear.<br><br>Disfruto mucho salir contigo a <strong>comer</strong>,<br>y poco a poco, todo de ti conocer. ❄️",
+            
+            "Sé que el tiempo sana y pide paciencia,<br>pero desde aquel día, noto tu ausencia.<br><br>No quiero correr ni saltarme un paso,<br>solo saber qué nos dice este caso.<br><br>Si el destino cruzó nuestras miradas,<br>quizá valga la pena abrir las entradas. ✨",
+            
+            "Entre una cena, un café y lavar un motor,<br>nació de repente un destello, un color.<br><br>Fueron detalles de un día cualquiera,<br>que trajeron a mi invierno la primavera.<br><br>Una química extraña que no sé explicar,<br>pero que, sin dudarlo, quisiera explorar. ☕",
+            
+            "Soy de los que miran con mucho cuidado,<br>y no a cualquiera le ofrezco mi lado.<br><br>Pero contigo la duda se esfuma,<br>como si el viento limpiara la bruma.<br><br>Tengo ganas reales de hacer el intento,<br>de conocerte más y vivir el momento. 💜",
+            
+            "No busco promesas de amor infinito,<br>solo que escuches lo que aquí te he escrito.<br><br>Una puerta entreabierta, un 'vamos a ver',<br>sin miedos al qué podría suceder.<br><br>Si me das la mano, aunque sea un momento,<br>sabrás que es genuino lo que por ti siento. 💌"
+        ];
+        
+        let poemaActual = 0;
+
+        function actualizarPoema() {
+            document.getElementById('texto-poema').innerHTML = poemas[poemaActual];
+            document.getElementById('contador-poema').innerText = (poemaActual + 1) + "/" + poemas.length;
+            
+            // Ocultar/mostrar flecha izquierda
+            document.getElementById('btn-prev-poema').style.visibility = poemaActual === 0 ? 'hidden' : 'visible';
+            
+            // Si es el último poema, mostrar el botón de regresar
+            if (poemaActual === poemas.length - 1) {
+                document.getElementById('btn-next-poema').style.display = 'none';
+                document.getElementById('btn-cerrar-poema').style.display = 'inline-block';
+            } else {
+                document.getElementById('btn-next-poema').style.display = 'inline-block';
+                document.getElementById('btn-cerrar-poema').style.display = 'none';
+            }
+        }
+
+        function cambiarPoema(direccion) {
+            poemaActual += direccion;
+            actualizarPoema();
+        }
+
         function mostrarPoema() {
             document.getElementById('pantalla-carta').style.display = "none";
-            let poema = document.getElementById('pantalla-poema');
-            poema.style.display = "block";
-            poema.style.opacity = "1";
-            poema.classList.add('animacion-abrir'); // Animación de sobre abriéndose
+            let poemaContainer = document.getElementById('pantalla-poema');
+            poemaContainer.style.display = "block";
+            poemaContainer.style.opacity = "1";
+            poemaContainer.classList.add('animacion-abrir');
             
-            // Explosión de nieve al abrir la carta
+            // Reiniciar al poema 1
+            poemaActual = 0;
+            actualizarPoema();
+            
             for(let i=0; i<15; i++) { setTimeout(crearNieve, i * 50); }
         }
 
@@ -216,7 +288,7 @@
             transicionPantalla('pantalla-poema', 'pantalla-carta');
         }
 
-        // Lógica del Botón NO (Escurridizo en PC y Celular)
+        // --- LÓGICA DEL BOTÓN NO ---
         let contadorNo = 0;
         const btnNo = document.getElementById('btn-no');
         const mensajeNo = document.getElementById('mensaje-no-error');
@@ -224,41 +296,31 @@
         function moverBotonNo() {
             contadorNo++;
             
-            // Textos divertidos que cambian
             if(contadorNo === 1) mensajeNo.innerText = "Uy, creo que tu dedo resbaló... 😉";
             else if(contadorNo === 2) mensajeNo.innerText = "Mmm... ¿segura? Atrápalo si puedes...";
             else if(contadorNo === 3) mensajeNo.innerText = "Definitivamente te estás equivocando de botón 😌";
             
             if(contadorNo >= 4) {
-                // A la cuarta vez desaparece
                 btnNo.style.display = "none";
                 mensajeNo.innerText = "¡Ups! El botón 'NO' se escapó. Es una señal del destino ✨";
             } else {
-                // Mueve el botón a una posición aleatoria de la pantalla
                 btnNo.style.position = "fixed";
-                
-                // Calcular espacio disponible para que no se salga de la pantalla
                 let maxX = window.innerWidth - btnNo.offsetWidth - 20;
                 let maxY = window.innerHeight - btnNo.offsetHeight - 20;
-                
                 let randomX = Math.floor(Math.random() * maxX);
                 let randomY = Math.floor(Math.random() * maxY);
-                
                 btnNo.style.left = randomX + "px";
                 btnNo.style.top = randomY + "px";
             }
         }
 
-        // Lógica del Botón SÍ
+        // --- LÓGICA DEL BOTÓN SÍ ---
         function decirSi() {
             transicionPantalla('pantalla-carta', 'pantalla-exito');
-            
-            // Crear una TORMENTA de nieve (muchos copos muy rápido)
             clearInterval(intervaloNieve);
             intervaloNieve = setInterval(crearNieve, 30); 
         }
 
-        // Utilidad para cambiar pantallas suavemente
         function transicionPantalla(idOcultar, idMostrar) {
             let ocultar = document.getElementById(idOcultar);
             let mostrar = document.getElementById(idMostrar);
@@ -270,24 +332,6 @@
                 setTimeout(() => mostrar.style.opacity = "1", 50);
             }, 500);
         }
-
-        // Creador de Nieve
-        function crearNieve() {
-            const copo = document.createElement('div');
-            copo.classList.add('snowflake');
-            copo.innerHTML = '❄';
-            copo.style.left = Math.random() * 100 + 'vw';
-            copo.style.animationDuration = Math.random() * 3 + 4 + 's'; // Caen un poco más rápido
-            copo.style.fontSize = Math.random() * 10 + 10 + 'px';
-            document.body.appendChild(copo);
-            
-            // Eliminar de memoria después de caer
-            setTimeout(() => copo.remove(), 7000);
-        }
-        
-        // Iniciar nieve normal
-        intervaloNieve = setInterval(crearNieve, velocidadNieve);
-
     </script>
 </body>
 </html>
